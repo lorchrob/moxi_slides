@@ -40,7 +40,7 @@ The University of Iowa
 \frame{\titlepage}
 
 \begin{frame} 
-    \frametitle{Background}
+    \frametitle{Background} \pause
     \begin{itemize}
         \item Kind 2
         \begin{itemize}
@@ -59,7 +59,7 @@ The University of Iowa
 \end{frame}
 
 \begin{frame} 
-    \frametitle{KMoXI Architecture}
+    \frametitle{KMoXI Architecture}\pause
     \includegraphics[width=\textwidth]{/Users/lorchrob/Desktop/moxi_arch_1.png}
 \end{frame}
 
@@ -91,13 +91,13 @@ The University of Iowa
 % \end{frame}
 
 \begin{frame}
-    \frametitle{KMoXI Features}
+    \frametitle{KMoXI Features} \pause
     \begin{itemize}
         \item We support
         \begin{itemize}
             \item \code{define-system} with all attributes, including subsystems
             \item \code{check-system}, including assumptions and (some types of) reachability queries
-        \end{itemize}
+        \end{itemize} \pause
         \item Supported logics: QF\_LIA (main focus); QF\_BV, QF\_ABV (partial support)
     \end{itemize}
 \end{frame} 
@@ -128,28 +128,33 @@ The University of Iowa
                 (0 (var1 true) (var2 true) (var3 true)) \newline
                 (1 (var2 false))}} \pause 
         \item Multiple queries, as long as no uninterpreted functions \newline 
-        {\footnotesize \texttt {:queries ((q\_1 (r\_1)) ... (q\_n (r\_n)))}}
-        \item Rely on the user to include variable renamings in \code{check-system}
+        {\footnotesize \texttt {:queries ((q\_1 (r\_1)) ... (q\_n (r\_n)))}} \pause
+        \item Rely on the user to include variable renamings in \code{check-system} \pause
         \item Current conditions in \code{check-system}
         %need multiple versions of the internal transition system
     \end{itemize}
 \end{frame}
 
 \begin{frame}
+    \frametitle{KMoXI Limitations (Straightforward to Support)}
+    \begin{itemize}
+        \item Multiple reachability checks in the same query \newline \pause
+        \code{:query (q (r\_1 ... r\_n))}\pause, \newline has semantics (assuming no assumptions) \newline 
+        $I_s \land T_s \land \mathsf{Eventually}\; r_1 \land \dots \land \mathsf{Eventually}\; r_n$ 
+    \end{itemize}
+\end{frame}
+ 
+\begin{frame}
     \frametitle{KMoXI Limitations (Significant Effort to Support)}
     \begin{itemize}
-
         % rch_1  
         % rch_1_seen -> true true true  true
         % rch_2  
         % rch_2_seen                    true
         \pause
-        \item Multiple reachability checks in the same query \newline \pause
-        \code{:query (q (r\_1 ... r\_n))}, \newline has semantics (assuming no assumptions) \newline 
-        $I_s \land T_s \land \mathsf{Eventually}\; r_1 \land \dots \land \mathsf{Eventually}\; r_n$ \pause
         \item Kind 2 does not support liveness properties \pause
         \begin{itemize}
-        \item Fairness conditions \pause
+        \item Fairness conditions
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -160,7 +165,7 @@ The University of Iowa
         \item Underspecification of subsystem variable names/scopes in counterexamples \pause
         \begin{itemize}
             \item We use double colon syntax to give scope, e.g. \code{main::subsys::var} \pause
-            \item Some variables are repeated in the output \newline 
+            \item Some variables are repeated in the output \pause \newline 
             \code {
                 (define-system main ... \newline 
                     \hspace{1cm} :local ((local\_x Bool)  \newline 
@@ -182,7 +187,7 @@ The University of Iowa
             \code{(0 (x 0) (rch true)) \newline
             (1 (x 1) (rch ???))}
         \end{itemize} \pause
-            \item Distinguishing \code{define-system} and \code{check-system} variable scoping \newline 
+            \item Distinguishing \code{define-system} and \code{check-system} variable scoping \pause \newline 
             \code{(define-system main :input ((rch\_1 Bool)) ...  \newline
          (check-system main :reachable (rch\_1 ...) ...}
     \end{itemize}
@@ -192,9 +197,9 @@ The University of Iowa
     \frametitle{Specification Rough Edges}
     \begin{itemize}
         \item Deadlock checks \pause
-        \item Ordering of options for ease in parsing\newline 
+        \item Ordering of options for ease in parsing\pause\newline 
         \code{\{:input, :output, :local\}, \newline :subsys, \newline \{:init, :trans, :inv\}} \pause
-        \item Printing values of variables with array types
+        \item Printing values of variables with array types\pause
         \begin{itemize}
             \item \code{(get-value ...)} for MoXI?
             \item Need trail name, timestep, and term as inputs
