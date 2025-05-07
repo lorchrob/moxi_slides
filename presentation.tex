@@ -45,7 +45,7 @@ The University of Iowa
         \item Kind 2
         \begin{itemize}
             \item An SMT-based model checker for infinite-state synchronous reactive systems
-            \item Traditional input language is Lustre
+            \item Traditional input language is an extension Lustre
         \end{itemize}
         \pause
         \item MoXI
@@ -98,11 +98,13 @@ The University of Iowa
             \item \code{define-system} with all attributes, including subsystems
             \item \code{check-system}, including assumptions and (some types of) reachability queries
         \end{itemize}
+        \item Supported logics: QF\_LIA (main focus); QF\_BV, QF\_ABV (partial support)
     \end{itemize}
 \end{frame} 
 
 \begin{frame}
     \frametitle{KMoXI Limitations (Straightforward to Support)}
+    \pause
     \begin{itemize}
         \item Basic pipeline steps for MoXI-level error messages
         \begin{itemize}
@@ -128,20 +130,20 @@ The University of Iowa
         \item Multiple queries, as long as no uninterpreted functions \newline 
         {\footnotesize \texttt {:queries ((q\_1 (r\_1)) ... (q\_n (r\_n)))}}
         \item Rely on the user to include variable renamings in \code{check-system}
-        \item Current conditions: internal technical limitations
+        \item Current conditions in \code{check-system}
         %need multiple versions of the internal transition system
     \end{itemize}
 \end{frame}
 
 \begin{frame}
-    \frametitle{KMoXI Difficult Limitations}
+    \frametitle{KMoXI Limitations (Significant Effort to Support)}
     \begin{itemize}
 
         % rch_1  
         % rch_1_seen -> true true true  true
         % rch_2  
         % rch_2_seen                    true
-
+        \pause
         \item Multiple reachability checks in the same query \newline \pause
         \code{:query (q (r\_1 ... r\_n))}, \newline has semantics (assuming no assumptions) \newline 
         $I_s \land T_s \land \mathsf{Eventually}\; r_1 \land \dots \land \mathsf{Eventually}\; r_n$ \pause
