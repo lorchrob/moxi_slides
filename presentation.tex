@@ -59,6 +59,15 @@ The University of Iowa
 \end{frame}
 
 \begin{frame} 
+    \frametitle{Motivation} \pause
+    \begin{itemize}
+        \item Describe current features of KMoXI \pause
+        \item Explain current limitations to see if others face similar problems \pause 
+        \item Give thoughts on how to improve the MoXI spec  
+    \end{itemize}
+\end{frame}
+
+\begin{frame} 
     \frametitle{KMoXI Architecture}\pause
     \includegraphics[width=\textwidth]{/Users/lorchrob/Desktop/moxi_arch_1.png}
 \end{frame}
@@ -98,7 +107,7 @@ The University of Iowa
             \item \code{define-system} with all attributes, including subsystems
             \item \code{check-system}, including assumptions and (some types of) reachability queries
         \end{itemize} \pause
-        \item Supported logics: QF\_LIA (main focus); QF\_BV, QF\_ABV (partial support)
+        \item Supported logics: QF\_LIA (main focus); QF\_BV, QF\_ABV \newline (partial support)
     \end{itemize}
 \end{frame} 
 
@@ -115,7 +124,7 @@ The University of Iowa
         \item Enums \newline 
         {\footnotesize \texttt{(declare-enum-sort Color (red green blue))}}
         \pause
-        \item User-defined functions
+        \item User-defined functions \pause
         \item Uninterpreted functions. Challenge: sharing a model across traces in \code{:queries} case
     \end{itemize}
 \end{frame}
