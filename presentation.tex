@@ -59,7 +59,7 @@ The University of Iowa
 \end{frame}
 
 \begin{frame} 
-    \frametitle{Motivation} \pause
+    \frametitle{Goals of Talk} \pause
     \begin{itemize}
         \item Describe current features of KMoXI \pause
         \item Explain current limitations to see if others face similar problems \pause 
@@ -149,7 +149,7 @@ The University of Iowa
     \begin{itemize}
         \item Multiple reachability checks in the same query \newline \pause
         \code{:query (q (r\_1 ... r\_n))}\pause, \newline has semantics (assuming no assumptions) \newline 
-        $I_s \land T_s \land \mathsf{Eventually}\; r_1 \land \dots \land \mathsf{Eventually}\; r_n$ 
+        $I_s \land \mathsf{Always}\;T_s \land \mathsf{Eventually}\; r_1 \land \dots \land \mathsf{Eventually}\; r_n$ 
     \end{itemize}
 \end{frame}
  
