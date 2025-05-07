@@ -1,0 +1,212 @@
+\documentclass[11pt,xcolor={dvipsnames},hyperref={pdftex,pdfpagemode=UseNone,hidelinks,pdfdisplaydoctitle=true},usepdftitle=false]{beamer}
+\usepackage{presentation}
+
+\hypersetup{pdftitle={Augmenting Model-Based Instantiation with Fast Enumeration}}
+\newcommand\sym[1]{\mathsf{#1}}
+\newcommand\ty[1]{\mathit{#1}}
+
+\newcommand{\pt}{\phantom{0}}
+\newcommand{\ptt}{\phantom{0}\phantom{0}}
+\newcommand{\pttt}{\phantom{0}\phantom{0}\phantom{0}}
+\newcommand{\ptttt}{\phantom{0}\phantom{0}\phantom{0}\phantom{0}}
+\newrobustcmd\B{\DeclareFontSeriesDefault[rm]{bf}{b}\bfseries} 
+\usepackage{siunitx}
+\usepackage{mdframed}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\newcommand{\code}[1]{{\footnotesize\texttt{#1}}}
+\setbeamercovered{invisible}  
+% Define a custom dark green color
+\definecolor{darkgreen}{rgb}{0.0, 0.5, 0.0}
+\begin{document}
+% \setstretch{1.25}
+
+\title{KMoXI: A MoXI Interface for the Kind 2 Model Checker}
+%\subtitle{Extending SMT solving}
+
+\information
+%  
+% []  
+%
+{\underline{Rob Lorch}\quad Daniel Larraz\quad Cesare Tinelli
+\newline \newline   
+The University of Iowa
+}
+%
+%{TACAS 2025 \\2025-05-05, Hamilton, Canada}
+
+\frame{\titlepage}
+
+\begin{frame} 
+    \frametitle{Background}
+    \begin{itemize}
+        \item Kind 2
+        \begin{itemize}
+            \item An SMT-based model checker for infinite-state synchronous reactive systems
+            \item Traditional input language is Lustre
+        \end{itemize}
+        \pause
+        \item MoXI
+        \begin{itemize}
+            \item \textbf{Mo}del e\textbf{X}change \textbf{I}nterlingua
+            \item Common input/output language for model checkers; extension of SMT-LIB
+        \end{itemize}
+        \pause
+        \item Introducing KMoXI, Kind 2 with a MoXI interface
+    \end{itemize}
+\end{frame}
+
+\begin{frame} 
+    \frametitle{KMoXI Architecture}
+    \includegraphics[width=\textwidth]{/Users/lorchrob/Desktop/moxi_arch_1.png}
+\end{frame}
+
+\begin{frame} 
+    \frametitle{KMoXI Architecture}
+    \includegraphics[width=\textwidth]{/Users/lorchrob/Desktop/moxi_arch_2.png}
+\end{frame}
+
+\begin{frame} 
+    \frametitle{KMoXI Architecture}
+    \includegraphics[width=\textwidth]{/Users/lorchrob/Desktop/moxi_arch_3.png}
+\end{frame}
+
+\begin{frame} 
+    \frametitle{KMoXI Architecture}
+    \includegraphics[width=\textwidth]{/Users/lorchrob/Desktop/moxi_arch_4.png}
+\end{frame}
+
+% \begin{frame}
+%     \frametitle{KMoXI Architecture}
+%     \begin{itemize}
+%         \item Input \texttt{.moxi} file
+%         \item Lexing, parsing
+%         \item Type checking 
+%         \item Internal transition system with observer node
+%         \item Model checking algorithms: k-induction, BMC, IC3, invariant generation
+%         \item MoXI output (counterexample traces, proof certificates, and so on)
+%     \end{itemize}
+% \end{frame}
+
+\begin{frame}
+    \frametitle{KMoXI Features}
+    \begin{itemize}
+        \item We support
+        \begin{itemize}
+            \item \code{define-system} with all attributes, including subsystems
+            \item \code{check-system}, including assumptions and (some types of) reachability queries
+        \end{itemize}
+    \end{itemize}
+\end{frame} 
+
+\begin{frame}
+    \frametitle{KMoXI Limitations (Straightforward to Support)}
+    \begin{itemize}
+        \item Basic pipeline steps for MoXI-level error messages
+        \begin{itemize}
+            \item Syntax checks 
+            \item Type checking
+        \end{itemize} 
+        \pause
+        \item Enums \newline 
+        {\footnotesize \texttt{(declare-enum-sort Color (red green blue))}}
+        \pause
+        \item User-defined functions
+        \item Uninterpreted functions. Challenge: sharing a model across traces in \code{:queries} case
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{KMoXI Limitations (Straightforward to Support)}
+    \begin{itemize}
+        \item Condensed output (in general, flags) \newline 
+        {\footnotesize \texttt {
+                (0 (var1 true) (var2 true) (var3 true)) \newline
+                (1 (var2 false))}} \pause 
+        \item Multiple queries, as long as no uninterpreted functions \newline 
+        {\footnotesize \texttt {:queries ((q\_1 (r\_1)) ... (q\_n (r\_n)))}}
+        \item Rely on the user to include variable renamings in \code{check-system}
+        \item Current conditions: internal technical limitations
+        %need multiple versions of the internal transition system
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{KMoXI Difficult Limitations}
+    \begin{itemize}
+
+        % rch_1  
+        % rch_1_seen -> true true true  true
+        % rch_2  
+        % rch_2_seen                    true
+
+        \item Multiple reachability checks in the same query \newline \pause
+        \code{:query (q (r\_1 ... r\_n))}, \newline has semantics (assuming no assumptions) \newline 
+        $I_s \land T_s \land \mathsf{Eventually}\; r_1 \land \dots \land \mathsf{Eventually}\; r_n$ \pause
+        \item Kind 2 does not support liveness properties \pause
+        \begin{itemize}
+        \item Fairness conditions \pause
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Specification Rough Edges}
+    \begin{itemize}
+        \item Underspecification of subsystem variable names/scopes in counterexamples \pause
+        \begin{itemize}
+            \item We use double colon syntax to give scope, e.g. \code{main::subsys::var} \pause
+            \item Some variables are repeated in the output \newline 
+            \code {
+                (define-system main ... \newline 
+                    \hspace{1cm} :local ((local\_x Bool)  \newline 
+                    :subsys (call\_subsys (subsys local\_x ... \newline 
+                (define-system subsys \newline
+                    :input ((x Bool)) \newline
+            } 
+            We get both \code{main::subsys::x} and \code{main::local\_x}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Specification Rough Edges}
+    \begin{itemize}
+        \item Reachability conditions with primed variables \pause
+        \begin{itemize}
+            \item Consider \code{rch := x' > x} with the empty transition system \newline 
+            \code{(0 (x 0) (rch true)) \newline
+            (1 (x 1) (rch ???))}
+        \end{itemize} \pause
+            \item Distinguishing \code{define-system} and \code{check-system} variable scoping \newline 
+            \code{(define-system main :input ((rch\_1 Bool)) ...  \newline
+         (check-system main :reachable (rch\_1 ...) ...}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Specification Rough Edges}
+    \begin{itemize}
+        \item Deadlock checks \pause
+        \item Ordering of options for ease in parsing\newline 
+        \code{\{:input, :output, :local\}, \newline :subsys, \newline \{:init, :trans, :inv\}} \pause
+        \item Printing values of variables with array types
+        \begin{itemize}
+            \item \code{(get-value ...)} for MoXI?
+            \item Need trail name, timestep, and term as inputs
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Thanks!}
+    \begin{itemize}
+        \item Any questions?
+        \item \footnotesize{\url{https://github.com/kind2-mc/kind2}} \newline with \code{make kmoxi}
+    \end{itemize}
+\end{frame} 
+
+
+\end{document}
